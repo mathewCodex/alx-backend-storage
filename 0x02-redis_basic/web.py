@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-'''A mod with tools for req caching and tracking
+'''A module with tools for request caching and tracking.
 '''
 import redis
 import requests
@@ -8,16 +8,16 @@ from typing import Callable
 
 
 redis_store = redis.Redis()
-'''The mod level Redis instance
+'''The module-level Redis instance.
 '''
 
 
 def data_cacher(method: Callable) -> Callable:
-    '''Caches the output of fetched data
+    '''Caches the output of fetched data.
     '''
     @wraps(method)
     def invoker(url) -> str:
-        '''the wrapper func for caching the output
+        '''The wrapper function for caching the output.
         '''
         redis_store.incr(f'count:{url}')
         result = redis_store.get(f'result:{url}')
@@ -32,8 +32,7 @@ def data_cacher(method: Callable) -> Callable:
 
 @data_cacher
 def get_page(url: str) -> str:
-    '''Return the content of a url after caching the req
+    '''Returns the content of a URL after caching the request's response,
+    and tracking the request.
     '''
     return requests.get(url).text
-         
-
